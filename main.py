@@ -3,7 +3,13 @@ import time
 import random
 import pygame
 
-# # Load all off the Images
+# Set Global Parameters
+WIDTH, HEIGHT = 650, 650
+WIN = pygame.display.set_mode((WIDTH, HEIGHT))
+pygame.display.set_caption("Space Shooter")
+
+
+## Load all off the Images
 # Ships
 RED_SPACE_SHIP = pygame.image.load(os.path.join("assets", "pixel_ship_red_small.png"))
 GREEN_SPACE_SHIP = pygame.image.load(os.path.join("assets", "pixel_ship_green_small.png"))
@@ -16,3 +22,19 @@ BLUE_LASER = pygame.image.load(os.path.join("assets", "pixel_laser_blue.png"))
 YELLOW_LASER = pygame.image.load(os.path.join("assets", "pixel_laser_yellow.png"))
 # Background Image
 BG = pygame.image.load(os.path.join("assets", "background-black.png"))
+
+
+# Create Main Loop
+def main():
+    run = True
+    FPS = 60
+    clock = pygame.time.Clock()
+
+    while run:
+        clock.tick(FPS)
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                run  = False
+
+main()
