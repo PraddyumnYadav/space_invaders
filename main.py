@@ -75,9 +75,14 @@ class EnemyShip(Ship):
 def main():
     run = True
     FPS = 60
-    level = 1
+    level = 0
     lives = 5
     main_font = pygame.font.SysFont("comicsans", 50)
+
+    enemies = []
+    wave_length = 5
+    enemy_vel = 1
+
     player = Player(WIDTH / 2 - YELLOW_SPACE_SHIP.get_width() / 2, HEIGHT - YELLOW_SPACE_SHIP.get_height() - 5)
     main_vel = 5
 
@@ -92,6 +97,9 @@ def main():
         level_label = main_font.render(f"Level: {level}", 1, "white")
         WIN.blit(level_label, ((WIDTH - level_label.get_width() - 10), 10))
 
+        for enemy in enemies:
+            enemy.draw(WIN)
+
         player.draw(WIN)
 
         pygame.display.update()
@@ -99,6 +107,13 @@ def main():
     while run:
         clock.tick(FPS)
         redraw_window()
+
+        if len(enemies) == 0:
+            level += 1
+            wave_length += 2
+            for i in range(wave_length):
+                enemy = EnemyShip(random.randrange(50, WIDTH-50), random.randrange(-1500, -100), random.choice(["red", "blue", "green"]))
+                enemies.append(enemy)
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -121,6 +136,12 @@ def main():
                 and player.y + main_vel < HEIGHT - player.ship_image.get_height() - 2
         ):
             player.y += main_vel
+
+        for enemy in enemies[:]:
+            enemy.move(enemy_vel)
+            if enemy.y + enemy.ship_image.get_height() > HEIGHT:
+                lives -= 1
+                enemies.remove(enemy)
 
 
 # Run Our main() function
