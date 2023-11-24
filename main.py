@@ -16,16 +16,22 @@ pygame.display.set_caption("Space Shooter")
 ## Load all off the Images
 # Ships
 RED_SPACE_SHIP = pygame.image.load(os.path.join("assets", "pixel_ship_red_small.png"))
-GREEN_SPACE_SHIP = pygame.image.load(os.path.join("assets", "pixel_ship_green_small.png"))
+GREEN_SPACE_SHIP = pygame.image.load(
+    os.path.join("assets", "pixel_ship_green_small.png")
+)
 BLUE_SPACE_SHIP = pygame.image.load(os.path.join("assets", "pixel_ship_blue_small.png"))
-YELLOW_SPACE_SHIP = pygame.image.load(os.path.join("assets", "pixel_ship_yellow.png")) # Player Ship
+YELLOW_SPACE_SHIP = pygame.image.load(
+    os.path.join("assets", "pixel_ship_yellow.png")
+)  # Player Ship
 # Lasers
 RED_LASER = pygame.image.load(os.path.join("assets", "pixel_laser_red.png"))
 GREEN_LASER = pygame.image.load(os.path.join("assets", "pixel_laser_green.png"))
 BLUE_LASER = pygame.image.load(os.path.join("assets", "pixel_laser_blue.png"))
 YELLOW_LASER = pygame.image.load(os.path.join("assets", "pixel_laser_yellow.png"))
 # Background Image
-BG = pygame.transform.scale(pygame.image.load(os.path.join("assets", "background-black.png")), (WIDTH, HEIGHT))
+BG = pygame.transform.scale(
+    pygame.image.load(os.path.join("assets", "background-black.png")), (WIDTH, HEIGHT)
+)
 
 
 class Ship:
@@ -41,6 +47,7 @@ class Ship:
     def draw(self, window):
         pygame.draw.rect(window, "red", (self.x, self.y, 50, 50))
 
+
 # Create Main Loop
 def main():
     run = True
@@ -48,7 +55,7 @@ def main():
     level = 1
     lives = 5
     main_font = pygame.font.SysFont("comicsans", 50)
-    ship = Ship((WIDTH/2 - 25), (HEIGHT - 100))
+    ship = Ship((WIDTH / 2 - 25), (HEIGHT - 100))
     main_vel = 5
 
     clock = pygame.time.Clock()
@@ -72,7 +79,7 @@ def main():
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                run  = False
+                run = False
 
         keys = pygame.key.get_pressed()
         if keys[pygame.K_a] or keys[pygame.K_LEFT]:
@@ -83,5 +90,6 @@ def main():
             ship.y -= main_vel
         if keys[pygame.K_f] or keys[pygame.K_DOWN]:
             ship.y += main_vel
+
 
 main()
