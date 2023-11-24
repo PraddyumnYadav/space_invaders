@@ -7,7 +7,7 @@ import pygame
 pygame.font.init()
 
 # Set Global Parameters
-WIDTH, HEIGHT = 650, 650
+WIDTH, HEIGHT = 800, 675
 WIN = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Space Shooter")
 
@@ -78,6 +78,7 @@ def main():
     level = 0
     lives = 5
     main_font = pygame.font.SysFont("comicsans", 50)
+    lost_font = pygame.font.SysFont("comicsans", 100)
 
     enemies = []
     wave_length = 5
@@ -85,6 +86,9 @@ def main():
 
     player = Player(WIDTH / 2 - YELLOW_SPACE_SHIP.get_width() / 2, HEIGHT - YELLOW_SPACE_SHIP.get_height() - 5)
     main_vel = 5
+
+    lost = False
+    lost_count = 0
 
     clock = pygame.time.Clock()
 
@@ -104,9 +108,32 @@ def main():
 
         pygame.display.update()
 
+    def reset():
+        global enemies, wave_length, level, lives, lost
+        enemies = []
+        wave_length = 5
+        level = 0
+        lives = 5
+        lost = False
+        redraw_window()
+
     while run:
         clock.tick(FPS)
         redraw_window()
+
+        if lives <= 0 or player.health <= 0:
+            lost = True
+            lost_count += 1
+
+        if lost:
+            lost_label = lost_font.render("You Lost:(", 1, "red")
+            WIN.blit(lost_label, ((WIDTH / 2 - lost_label.get_width() / 2), (HEIGHT / 2 - lost_label.get_height() / 2)))
+            pygame.display.update()
+
+            if lost_count > FPS * 3:
+                break
+            else:
+                continue
 
         if len(enemies) == 0:
             level += 1
