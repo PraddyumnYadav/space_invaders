@@ -32,6 +32,26 @@ BG = pygame.transform.scale(
 )
 
 
+class Laser:
+    def __init__(self, x, y, img):
+        self.x = x
+        self.y = y
+        self.img = img
+        self.mask = pygame.mask.from_surface(self.img)
+
+    def draw(self, window):
+        window.blit(self.img, self.x, self.y)
+
+    def move(self, vel):
+        self.y += vel
+
+    def off_screen(self, height):
+        return height >= self.y >= 0
+
+    def collision(self, obj):
+        return collide(obj, self)
+
+
 class Ship:
     def __init__(self, x, y, health=100):
         self.x = x
@@ -40,7 +60,8 @@ class Ship:
         self.ship_image = None
         self.laser_image = None
         self.lasers = []
-        # self.cool_down_counter = 0
+
+    # self.cool_down_counter = 0
 
     def draw(self, window):
         window.blit(self.ship_image, (self.x, self.y))
@@ -69,6 +90,12 @@ class EnemyShip(Ship):
 
     def move(self, vel):
         self.y += vel
+
+
+def collide(obj1, obj2):
+    offset_x = obj2.x - obj1.x
+    offset_y = obj2.y - obj1.y
+    return obj1.mask.overlap(obj2, (offset_x, offset_y)) is not None
 
 
 # Create Main Loop
@@ -108,15 +135,6 @@ def main():
 
         pygame.display.update()
 
-    def reset():
-        global enemies, wave_length, level, lives, lost
-        enemies = []
-        wave_length = 5
-        level = 0
-        lives = 5
-        lost = False
-        redraw_window()
-
     while run:
         clock.tick(FPS)
         redraw_window()
@@ -139,7 +157,8 @@ def main():
             level += 1
             wave_length += 2
             for i in range(wave_length):
-                enemy = EnemyShip(random.randrange(50, WIDTH-50), random.randrange(-1500, -100), random.choice(["red", "blue", "green"]))
+                enemy = EnemyShip(random.randrange(50, WIDTH - 50), random.randrange(-1500, -100),
+                                  random.choice(["red", "blue", "green"]))
                 enemies.append(enemy)
 
         for event in pygame.event.get():
