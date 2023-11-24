@@ -45,7 +45,16 @@ class Ship:
         # self.cool_down_counter = 0
 
     def draw(self, window):
-        pygame.draw.rect(window, "red", (self.x, self.y, 50, 50))
+        window.blit(self.ship_image, (self.x, self.y))
+
+
+class Player(Ship):
+    def __init__(self, x, y, health=100):
+        super().__init__(x, y, health)
+        self.ship_image = YELLOW_SPACE_SHIP
+        self.laser_image = YELLOW_LASER
+        self.mask = pygame.mask.from_surface(self.ship_image)
+        self.max_health = health
 
 
 # Create Main Loop
@@ -55,7 +64,7 @@ def main():
     level = 1
     lives = 5
     main_font = pygame.font.SysFont("comicsans", 50)
-    ship = Ship((WIDTH / 2 - 25), (HEIGHT - 100))
+    player = Player(WIDTH/2 - YELLOW_SPACE_SHIP.get_width()/2, HEIGHT-YELLOW_SPACE_SHIP.get_height() - 5) 
     main_vel = 5
 
     clock = pygame.time.Clock()
@@ -69,7 +78,7 @@ def main():
         level_label = main_font.render(f"Level: {level}", 1, "white")
         WIN.blit(level_label, ((WIDTH - level_label.get_width() - 10), 10))
 
-        ship.draw(WIN)
+        player.draw(WIN)
 
         pygame.display.update()
 
@@ -82,14 +91,22 @@ def main():
                 run = False
 
         keys = pygame.key.get_pressed()
-        if keys[pygame.K_a] or keys[pygame.K_LEFT] and ship.x - main_vel > 5:
-            ship.x -= main_vel
-        if keys[pygame.K_d] or keys[pygame.K_RIGHT] and ship.x + main_vel < WIDTH - 55:
-            ship.x += main_vel
-        if keys[pygame.K_s] or keys[pygame.K_UP] and ship.y - main_vel > 5:
-            ship.y -= main_vel
-        if keys[pygame.K_f] or keys[pygame.K_DOWN] and ship.y + main_vel < HEIGHT - 55:
-            ship.y += main_vel
+        if keys[pygame.K_a] or keys[pygame.K_LEFT] and player.x - main_vel > 2:  # left
+            player.x -= main_vel
+        if (
+            keys[pygame.K_d]
+            or keys[pygame.K_RIGHT]
+            and player.x + main_vel < WIDTH - player.ship_image.get_width() - 2
+        ):  # right
+            player.x += main_vel
+        if keys[pygame.K_s] or keys[pygame.K_UP] and player.y - main_vel > 2:  # up
+            player.y -= main_vel
+        if (
+            keys[pygame.K_f]
+            or keys[pygame.K_DOWN]
+            and player.y + main_vel < HEIGHT - player.ship_image.get_height() - 2
+        ):  # down
+            player.y += main_vel
 
 
 main()
