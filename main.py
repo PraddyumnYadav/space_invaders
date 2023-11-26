@@ -208,6 +208,7 @@ def main():
 
         if len(enemies) == 0:
             level += 1
+            player.COOLDOWN -= 1
             wave_length += 2
             for i in range(wave_length):
                 enemy = EnemyShip(
@@ -222,12 +223,12 @@ def main():
                 run = False
 
         keys = pygame.key.get_pressed()
-        if keys[pygame.K_a] or keys[pygame.K_LEFT] and player.x - player_vel > 0:
+        if keys[pygame.K_a] or keys[pygame.K_LEFT] and player.x - player_vel > -player.ship_image.get_width()/2:
             player.x -= player_vel
         if (
             keys[pygame.K_d]
             or keys[pygame.K_RIGHT]
-            and player.x + player_vel < WIDTH - player.ship_image.get_width()
+            and player.x + player_vel < WIDTH - player.ship_image.get_width()/2
         ):
             player.x += player_vel
         if keys[pygame.K_s] or keys[pygame.K_UP] and player.y - player_vel > 0:
@@ -235,11 +236,9 @@ def main():
         if (
             keys[pygame.K_f]
             or keys[pygame.K_DOWN]
-            and player.y + player_vel < HEIGHT - player.ship_image.get_height() - 2
+            and player.y + player_vel < HEIGHT - player.ship_image.get_height()
         ):
             player.y += player_vel
-        if keys[pygame.K_SPACE]:
-            player.shoot()
 
         for enemy in enemies[:]:
             enemy.move(enemy_vel)
@@ -248,6 +247,9 @@ def main():
                 lives -= 1
                 enemies.remove(enemy)
         player.move_lasers(-laser_vel, enemies)
+
+        # Shoot Lasers from our main Ship
+        player.shoot()
 
 
 # Run Our main() function
