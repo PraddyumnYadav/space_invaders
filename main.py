@@ -152,12 +152,19 @@ class EnemyShip(Ship):
         "blue": (BLUE_SPACE_SHIP, BLUE_LASER),
     }
 
-    def __init__(self, x, y, color, health=100):
+    def __init__(self, x, y, color, diagonal, diagonal_direction, health=100):
         super().__init__(x, y, health)
         self.ship_image, self.laser_image = self.COLOR_MAP[color]
         self.mask = pygame.mask.from_surface(self.ship_image)
+        self.diagonal = diagonal
+        self.diagonal_direction = diagonal_direction
 
     def move(self, vel):
+        if self.diagonal:
+            if self.diagonal_direction == 0:
+                self.x += 0.5
+            else:
+                self.x -= 0.5
         self.y += vel
 
 
@@ -234,13 +241,17 @@ def main():
 
         if len(enemies) == 0:
             level += 1
-            player.COOLDOWN -= 2
+            player.COOLDOWN -= 1
             wave_length += 2
             for i in range(wave_length):
+                diagonal = random.choice([True, False*20])
+                diagonal_direction = random.choice([0, 1])
                 enemy = EnemyShip(
                     random.randrange(50, WIDTH - 50),
                     random.randrange(-1500, -100),
                     random.choice(["red", "blue", "green"]),
+                    diagonal,
+                    diagonal_direction
                 )
                 enemies.append(enemy)
 
@@ -280,6 +291,8 @@ def main():
                 enemies.remove(enemy)
             if enemy.y + enemy.ship_image.get_height() > HEIGHT:
                 lives -= 1
+                enemies.remove(enemy)
+            if enemy.x + enemy.ship_image.get_height() > WIDTH or enemy.x < 0:
                 enemies.remove(enemy)
         player.move_lasers(-laser_vel, enemies)
 
