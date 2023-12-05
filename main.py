@@ -33,17 +33,21 @@ BG = pygame.transform.scale(
 
 
 class Laser:
-    def __init__(self, x, y, img):
+    def __init__(self, x, y, img, diagonal):
         self.x = x
         self.y = y
         self.img = img
         self.mask = pygame.mask.from_surface(self.img)
+        self.diagonal = diagonal[0]
+        self.direction_diagonal = diagonal[1]
 
     def draw(self, window):
         window.blit(self.img, (self.x, self.y))
 
     def move(self, vel):
         self.y += vel
+        if self.diagonal == 0:
+            self.x += (vel*self.direction_diagonal)/2
 
     def off_screen(self, height):
         return not (height >= self.y >= 0)
@@ -87,7 +91,11 @@ class Ship:
 
     def shoot(self):
         if self.cool_down_counter == 0:
-            laser = Laser(self.x, self.y, self.laser_image)
+            d = random.randrange(0, 2)
+            nop = random.choice([-1, 1])
+            diagonal = [d, nop]
+
+            laser = Laser(self.x, self.y, self.laser_image, diagonal)
             self.lasers.append(laser)
             self.cool_down_counter = 1
 
